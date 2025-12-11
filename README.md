@@ -1,88 +1,107 @@
-# my-opencode-plugin
+# OpenCode Prompt Improver Plugin
 
-An OpenCode plugin
+An OpenCode plugin that automatically evaluates prompts for clarity and triggers research-based clarification when prompts are vague or ambiguous.
 
-> An OpenCode plugin created from the [opencode-plugin-template](https://github.com/zenobi-us/opencode-plugin-template)
+Based on [claude-code-prompt-improver](https://github.com/severity1/claude-code-prompt-improver).
 
-## Features
+## Installation
 
-- 🏗️ TypeScript-based plugin architecture
-- 🔧 Mise task runner integration
-- 📦 Bun/npm build tooling
-- ✨ ESLint + Prettier formatting
-- 🧪 Vitest testing setup
-- 🚀 GitHub Actions CI/CD
-- 📝 Release automation with release-please
+```bash
+bun add @codymclain/opencode-prompt-improver
+```
 
-## Getting Started
-
-1. **Clone this template:**
-
-   ```bash
-   cp -r opencode-plugin-template your-plugin-name
-   cd your-plugin-name
-   ```
-
-2. **Update package.json:**
-   - Change `name` to your plugin name
-   - Update `description`
-   - Update `repository.url`
-
-3. **Install dependencies:**
-
-   ```bash
-   bun install
-   ```
-
-4. **Implement your plugin in `src/index.ts`:**
-
-   ```typescript
-   import type { Plugin } from '@opencode-ai/plugin';
-
-   export const YourPlugin: Plugin = async (ctx) => {
-     return {
-       tool: {
-         // Your plugin tools here
-       },
-     };
-   };
-   ```
-
-5. **Test your plugin:**
-   ```bash
-   mise run test
-   ```
-
-## Development
-
-- `mise run build` - Build the plugin
-- `mise run test` - Run tests
-- `mise run lint` - Lint code
-- `mise run lint:fix` - Fix linting issues
-- `mise run format` - Format code with Prettier
-
-## Installation in OpenCode
-
-Create or edit `~/.config/opencode/config.json`:
+Or add to your OpenCode config:
 
 ```json
 {
-  "plugins": ["my-opencode-plugin"]
+  "plugins": ["@codymclain/opencode-prompt-improver"]
 }
 ```
 
-## Author
+## How It Works
 
-Your Name <you@example.com>
+The plugin intercepts user messages and evaluates them for clarity using pattern matching. When a prompt is determined to be vague (score < 60/100), it automatically injects context instructing the agent to:
 
-## Repository
+1. **Research Phase**: Explore the codebase, check conversation history, find relevant files
+2. **Generate Clarifying Questions**: Ask 1-4 targeted questions with options grounded in actual codebase findings
+3. **Wait for User Response**: Don't proceed until clarification is received
+4. **Execute with Context**: Use original intent + clarifications + research findings
 
-https://github.com/neocody/opencode-prompt-improver.git
+## Evaluation Criteria
 
-## Contributing
+Prompts are scored on:
 
-Contributions are welcome! Please file issues or submit pull requests on the GitHub repository.
+- **Target Specificity**: Does it mention specific files, functions, or components?
+- **Action Clarity**: Is the action clearly defined with specifics?
+- **Success Criteria**: Are expected outcomes described?
+- **Context**: Is there sufficient context to execute?
+
+## Bypass Prefixes
+
+The following prefixes bypass evaluation:
+
+- `*` - Force immediate execution
+- `/` - Slash commands
+- `#` - Memory/notes
+- `!` - Shell commands
+
+## Tools Provided
+
+### `evaluate_prompt`
+
+Manually evaluate a prompt for clarity.
+
+```
+evaluate_prompt("fix the bug")
+// Returns: { isVague: true, score: 15, reasons: [...], suggestions: [...] }
+```
+
+### `improve_prompt`
+
+Generate improvement context for a vague prompt.
+
+```
+improve_prompt("add authentication")
+// Returns detailed research and clarification instructions
+```
+
+## Examples
+
+### Vague Prompt (Triggers Clarification)
+
+```
+User: "fix the bug"
+
+Plugin injects context instructing agent to:
+1. Search for TODOs, failing tests, recent commits
+2. Ask which specific bug to fix with options from codebase
+3. Wait for user selection before proceeding
+```
+
+### Clear Prompt (Passes Through)
+
+```
+User: "Refactor getUserById in src/api/users.ts to use async/await"
+
+Plugin: Score 85/100 - Clear enough, no clarification needed
+```
+
+## Development
+
+```bash
+# Install dependencies
+bun install
+
+# Type check
+bun tsc --noEmit
+
+# Build
+mise run build
+
+# Test
+mise run test
+```
 
 ## License
 
-MIT License. See the [LICENSE](LICENSE) file for details.
+MIT

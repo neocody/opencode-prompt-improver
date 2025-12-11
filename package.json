@@ -1,10 +1,10 @@
 {
-  "name": "{{pluginName}}",
+  "name": "@codymclain/opencode-prompt-improver",
   "version": "0.1.0",
-  "description": "{{description}}",
+  "description": "OpenCode plugin that automatically improves vague prompts through research and clarification",
   "author": {
-    "name": "{{authorName}}",
-    "email": "{{authorEmail}}"
+    "name": "Cody McLain",
+    "email": "cody@codymclain.com"
   },
   "type": "module",
   "exports": {
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "{{repositoryUrl}}"
+    "url": "https://github.com/codymclain/opencode-prompt-improver"
   },
   "publishConfig": {
     "access": "public",

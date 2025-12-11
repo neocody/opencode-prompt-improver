@@ -1,6 +1,6 @@
 {
   "name": "@codymclain/opencode-prompt-improver",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "OpenCode plugin that automatically improves vague prompts through research and clarification",
   "author": {
     "name": "Cody McLain",

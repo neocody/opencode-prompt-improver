@@ -19,6 +19,7 @@ permissions:
 
 jobs:
   publish:
+    if: vars.RELEASE_AUTOMATION_APPROVED == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

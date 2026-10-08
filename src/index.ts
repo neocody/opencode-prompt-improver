@@ -5,7 +5,7 @@
  * Based on: https://github.com/severity1/claude-code-prompt-improver
  */
 
-import type { Plugin, PluginInput } from '@opencode-ai/plugin';
+import type { Plugin } from '@opencode-ai/plugin';
 import { tool } from '@opencode-ai/plugin';
 
 interface EvaluationResult {
@@ -213,7 +213,7 @@ Now, begin the research phase for: "${originalPrompt}"
 `;
 }
 
-export const PromptImproverPlugin: Plugin = async (_input: PluginInput) => {
+export const PromptImproverPlugin: Plugin = async () => {
   const evaluatePromptTool = tool({
     description:
       'Evaluate a prompt for clarity and determine if it needs improvement. Returns evaluation score and suggestions.',

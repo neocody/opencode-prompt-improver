@@ -14,6 +14,7 @@ permissions:
 
 jobs:
   process:
+    if: vars.RELEASE_AUTOMATION_APPROVED == 'true'
     runs-on: ubuntu-latest
     outputs:
       releases_created: ${{ steps.release-please.outputs.releases_created }}
@@ -29,7 +30,7 @@ jobs:
   dispatch-publish:
     needs: process
     runs-on: ubuntu-latest
-    if: needs.process.outputs.releases_created == 'true' || needs.process.outputs.prs_created == 'true'
+    if: vars.RELEASE_AUTOMATION_APPROVED == 'true' && (needs.process.outputs.releases_created == 'true' || needs.process.outputs.prs_created == 'true')
     steps:
       - name: Dispatch publish for releases
         if: needs.process.outputs.releases_created == 'true'
